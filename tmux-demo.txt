@@ -3,66 +3,82 @@
 --- tmux select-layout even-horizontal
 --- tmux select-pane -t :.0
 --- tmux setw synchronize-panes on
-unset PROMPT_COMMAND ; export PS1='ebruser@alwaysfree $ ' ;  export WALLET=$HOME/Wallet_demoadb.zip ; clear
+unset PROMPT_COMMAND ; export PS1='ebruser@alwaysfree $ ' ;  export WALLET=$HOME/demoadb/wallet.zip ; clear
 cd ~/misc-labs/ebr-online/ebr-moviestream/ 
 --- tmux setw synchronize-panes off
 ---# ----- REINITIALIZATION OF THE USER, SKIP IT IF ALREADY DONE
 --- tmux select-pane -t :.0
 cd initial_setup
-sql -cloudconfig $WALLET admin/\"$ADB_PASSWORD\"@demoadb_tp
+sql -save demoadb -replace -savepwd -cloudconfig $WALLET admin/\"$ADB_PASSWORD\"@demoadb_tp
+---# the following two commands will fail on the very first execution
 drop user moviestream cascade;
 @reset_edition
 @moviestream_main
+---# replace this password with a secure one
 Welcome#Welcome#123
 ./
 demoadb_tp
 ---# it takes a while (2-3- minutes)
+---# this also will fail on the very first execution
 @reset_edition
 select object_name, object_type, status, edition_name from user_objects_ae where edition_name is not null  order by 4,2;
 select * from dba_editions;
+---# exec admin.drop_edition('V2');
 exit
 clear
 ---# -----------------------------------------------------
----# START The demo to record starts here
+---# START The demo to show at conferences starts here
 ---# -----------------------------------------------------
-sql -cloudconfig $WALLET moviestream/Welcome#Welcome#123@demoadb_tp
+sql -save moviestream -replace -savepwd -cloudconfig $WALLET moviestream/Welcome#Welcome#123@demoadb_tp
 select first_name, last_name, country, country_code, continent
 from customer fetch first 5 rows only;
+---# customer is an editioning view!
 ddl customer
+---# this is the editioning table
 desc customer$0
+---# editioning and editionable objects belong to an edition
 select object_name, object_type, status, edition_name
  from user_objects_ae where edition_name is not null  order by 4,2;
 --- tmux select-pane -t :.1
 cd ~/misc-labs/ebr-online/ebr-moviestream/changes
+---# alternatively, shot this in github directly
 cat moviestream.002.v2/moviestream.0* | grep -v "^insert"| more
 --- tmux split-window -h
-unset PROMPT_COMMAND ; export PS1='ebruser@alwaysfree $ ' ;  export WALLET=$HOME/Wallet_demoadb.zip ; clear
+unset PROMPT_COMMAND ; export PS1='ebruser@alwaysfree $ ' ;  export WALLET=$HOME/demoadb/wallet.zip ; clear
 ---# tmux select-layout even-horizontal
 --- tmux select-pane -t :.0
 --- tmux resizep -L 22
 --- tmux select-pane -t :.2
 --- tmux split-window -v
 --- tmux select-pane -t :.3
-unset PROMPT_COMMAND ; export PS1='ebruser@alwaysfree $ ' ;  export WALLET=$HOME/Wallet_demoadb.zip ; clear
+unset PROMPT_COMMAND ; export PS1='ebruser@alwaysfree $ ' ;  export WALLET=$HOME/demoadb/wallet.zip ; clear
 --- tmux select-pane -t :.2
 . $HOME/.bash_profile
 cd ~/misc-labs/ebr-online/ebr-moviestream/insert_app
 ls v*
+pip install -r v1/requirements.txt
 python v1/insert_data.py
 --- tmux select-pane -t :.3
 . $HOME/.bash_profile
 cd ~/misc-labs/ebr-online/ebr-moviestream/insert_app
 python v1/insert_data.py
 --- tmux select-pane -t :.1
-sql -cloudconfig $WALLET moviestream/Welcome#Welcome#123@demoadb_tp
+sql -name moviestream
 lb update -changelog-file moviestream.002.v2.xml
 --- tmux select-pane -t :.0
+---# still the old version
 desc customer
+desc countries
+desc continents
+---# because still in the old edition
 select sys_context('USERENV', 'SESSION_EDITION_NAME') from dual;
+---# the old query still works
 select first_name, last_name, country, country_code, continent
  from customer fetch first 5 rows only;
+---# check the editions
 select object_name, object_type, edition_name
  from user_objects_ae where edition_name is not null  order by edition_name, object_type;
+---# the new application query does NOT work
 select cus.first_name, cus.last_name,
    cus.country_code, cou.country, con.continent
  from customer cus join countries cou
@@ -71,8 +87,7 @@ select cus.first_name, cus.last_name,
     on (cou.continent_code = con.continent_code)
  fetch first 5 rows only;
 --- tmux select-pane -t :.1
-select sys_context('USERENV', 'SESSION_EDITION_NAME') from dual;
-alter session set edition=v2;
+---# here we ARE on the new edition:
 select sys_context('USERENV', 'SESSION_EDITION_NAME') from dual;
 desc customer
 desc countries
@@ -98,7 +113,7 @@ end;
 --- tmux send-keys -t :.2 C-c
 python v2/insert_data.py
 --- tmux select-pane -t :.0
-sql -cloudconfig $WALLET moviestream/Welcome#Welcome#123@demoadb_tp
+sql -name moviestream
 select sys_context('USERENV', 'SESSION_EDITION_NAME') from dual;
 ---# --------------------------------------
 ---# EBR DEMO STOPS HERE. NEXT IS DBMS_REDEFINITION

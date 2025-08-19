@@ -3,6 +3,11 @@
 # It must be executed after the terraform stack is deployed locally (not with OCI Resource Manager)
 # as it requires the output variables to be readable to set up everything.
 #
+# Requirements:
+# - oci commandline already configured
+# - variable COMPARTMENT_OCID set
+# - wget with internet connection
+#
 # This script:
 # - get the ADB password
 # - it downloads the ADB wallet and unzip it in $HOME/demoadb
@@ -13,7 +18,7 @@ if [ -z "$COMPARTMENT_OCID" ] ; then
     echo "COMPARTMENT_OCID variable not set"
     exit
 fi
-export ADB_OCID=$(oci db autonomous-database list --compartment-id $COMPARTMENT_OCID  | jq -r '.data[] | select(."db-name"=="demoadb") | .id')
+export ADB_OCID=$(oci db autonomous-database list --compartment-id $COMPARTMENT_OCID  | jq -r '.data[] | select(."db-name"=="demoadb") | select( ."lifecycle-state"=="AVAILABLE") | .id' )
 
 export ADB_PASSWORD=$(echo 'nonsensitive(random_password.adb_password.result)' | terraform console)
 export WLT_PASSWORD=$(echo 'nonsensitive(random_password.adb_wallet_password.result)' | terraform console)
@@ -30,7 +35,7 @@ oci db autonomous-database generate-wallet --password $ADB_PASSWORD --autonomous
 [ -d $CONFIG_DIR ] && rm -rf $CONFIG_DIR
 mkdir $CONFIG_DIR
 cd $CONFIG_DIR
-unzip $TMP_WALLET && rm $TMP_WALLET
+unzip $TMP_WALLET && mv $TMP_WALLET ./wallet.zip
 
 
 if [ `uname -m` == "aarch64" ] ; then
