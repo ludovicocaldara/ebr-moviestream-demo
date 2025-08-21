@@ -1,5 +1,6 @@
 -- moviestream.000007.countries_continents_populate.sql
 -- NOT SHOWN IN THE DEMO, WE POPULATE CONTINENTS AND COUNTRIES
+set define off
 insert into continents (continent_code, continent) values ('AF','Africa');
 insert into continents (continent_code, continent) values ('OC','Oceania');
 insert into continents (continent_code, continent) values ('EU','Europe');
