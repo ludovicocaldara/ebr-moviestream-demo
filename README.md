@@ -2,7 +2,7 @@
 This repository contains a demo for the **Oracle Edition-Based Redefinition (EBR)** using the **moviestream** schema. It demonstrates how to deploy a new version of the schema while the application using the old schema is still running, and shows the two versions running simultaneously (blue-green deployment).
 
 The demo is based on an **Always Free Autonomous Database Serverless** (available for free on Oracle Cloud Infrastructure).
-It is executed from the Cloud Shell. The steps are executed one by one using tmux-vim-mappings available here: https://github.com/ludovicocaldara/misc-labs/tree/main/tmux-vim-mappings.
+It is executed from the Cloud Shell. The steps are executed one by one using tmux-vim-mappings available here: https://github.com/ludovicocaldara/tmux-vim-mappings.
 
 The `tmux` commands set up the console environment and go through some steps that include:
 
@@ -25,7 +25,7 @@ The `tmux` commands set up the console environment and go through some steps tha
 
 If you run the demo from Oracle Cloud Infrastructure Cloud Shell (RECOMMENDED):
 
-* [tmux-vim-mappings](https://github.com/ludovicocaldara/misc-labs/tree/main/tmux-vim-mappings) (for tmux/vi integration)
+* [tmux-vim-mappings](https://github.com/ludovicocaldara/tmux-vim-mappings) (for tmux/vi integration)
 
 If you run the demo from your laptop:
 
@@ -34,7 +34,7 @@ If you run the demo from your laptop:
 * [vi/vim](https://www.vim.org/)
 * [SQLcl](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/)
 * [Python](https://www.python.org/downloads/)
-* [tmux-vim-mappings](https://github.com/ludovicocaldara/misc-labs/tree/main/tmux-vim-mappings) (for tmux/vi integration)
+* [tmux-vim-mappings](https://github.com/ludovicocaldara/tmux-vim-mappings) (for tmux/vi integration)
 
 ## Setup Instructions
 
@@ -66,12 +66,13 @@ This script will:
 
 ### 3. Prepare the tmux Environment
 
-Clone and configure the [tmux-vim-mappings](https://github.com/ludovicocaldara/misc-labs/tree/main/tmux-vim-mappings) repository as described in its documentation to enable tmux/vi integration.
+Clone and configure the [tmux-vim-mappings](https://github.com/ludovicocaldara/tmux-vim-mappings) repository as described in its documentation to enable tmux/vi integration.
 
 ## Demo Overview and Execution (`tmux-demo.txt`)
 
 Open a `tmux` session in a Cloud Shell tab.
 
 Open a `vi tmux-demo.txt` in another Cloud Shell tab.
+
 
 The `tmux-demo.txt` file contains a sequence of commands and instructions designed to be executed interactively. When pressing `PgDown`, the command is sent automatically to the `tmux` session. That makes going through the demo very easy.
